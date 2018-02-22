@@ -146,13 +146,13 @@ class API2CloudStorage(HttpOperator, SkipMixin):
             logging.info('Resource Unavailable.')
             return
         else:
-            output.extend([e for e in response[self.hubspot_object]])
+            output.extend([e for e in response[self.api_object]])
 
         output = self.subTableMapper(output)
 
         return output
 
-    def methodMapper(self, hubspot_object, company_id=None, campaign_id=None):
+    def methodMapper(self, api_object, company_id=None, campaign_id=None):
         """
         This method maps the desired object to the relevant endpoint.
 
@@ -161,7 +161,7 @@ class API2CloudStorage(HttpOperator, SkipMixin):
         """
         mapping = {}
 
-        return mapping[hubspot_object]
+        return mapping[api_object]
 
     def subTableMapper(self, output):
         """
@@ -193,7 +193,7 @@ class API2CloudStorage(HttpOperator, SkipMixin):
             for entry in mapping:
                 returnable_list = []
                 subtable_data = getByDotNotation(record, entry['split'])
-                if ((entry['name'] == self.hubspot_object) and subtable_data):
+                if ((entry['name'] == self.api_object) and subtable_data):
                     final_key_split = entry['split'].lower().replace('.', '_')
                     for item in subtable_data:
                         returnable_dict = {}
@@ -225,7 +225,7 @@ class API2CloudStorage(HttpOperator, SkipMixin):
             output_list.append(output_dict)
             for entry in mapping:
                 output_dict = {}
-                if (entry['name'] == self.hubspot_object):
+                if (entry['name'] == self.api_object):
                     output_dict[entry['split']] = [e.pop(entry['split']) for e in output
                                                    if (entry['split'] in list(e.keys()))]
                     output_dict[entry['split']] = [item for sublist in output_dict[entry['split']]
@@ -262,7 +262,7 @@ class API2CloudStorage(HttpOperator, SkipMixin):
 
             for entry in mapping:
                 # Check to see if the filtered value exists in the record
-                if (entry['name'] == self.hubspot_object)\
+                if (entry['name'] == self.api_object)\
                  and (entry['filtered'] in list(record.keys())):
                     # Check to see if any retained fields are desired.
                     # If not, delete the object.
